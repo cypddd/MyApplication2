@@ -54,6 +54,7 @@
         android:layout_marginEnd="16dp"
         android:ems="10"
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/pb_reg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,4 +78,40 @@
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_regpwd" />
+
+    <TextView
+        android:id="@+id/tv_name_hint"
+        android:layout_width="0dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="182dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="18dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/et_regpwd"
+        app:layout_constraintEnd_toStartOf="@+id/pb_reg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <ProgressBar
+        android:id="@+id/pb_reg"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="55dp"
+        android:layout_height="39dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="590dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_name_hint"
+        app:layout_constraintTop_toBottomOf="@+id/et_regname" />
+
+    <ProgressBar
+        android:id="@+id/pb_reg_downstair"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="103dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="64dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_reg_in_RegActivity" />
 </androidx.constraintlayout.widget.ConstraintLayout>

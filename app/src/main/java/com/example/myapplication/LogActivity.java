@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
     CheckBox cb_rember;
     boolean rember=false;
     Intent i;
+    ProgressBar pb_log;
 
     Retrofit retrofit;
     LogServece logServece;
@@ -52,7 +54,7 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
         initView();
         if((Boolean) getSharedPreferences("log_info", Context.MODE_PRIVATE).getBoolean("rember",false)){        //自动登陆
             cb_rember.setChecked(true);
-            checkforlog();
+//            checkforlog();
         }
     }
 
@@ -93,15 +95,16 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
                 }
             }
         });
-
-        MyApplication myApplication=(MyApplication)getApplication();
+        pb_log=(ProgressBar)findViewById(R.id.pb_log);
+        pb_log.setVisibility(View.INVISIBLE);
 
         retrofit = new Retrofit.Builder()
-                .baseUrl(myApplication.getBaseurl())//基础URL 建议以 / 结尾
+                .baseUrl(new MyApplication().getBaseurl())//基础URL 建议以 / 结尾
                 .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())//RxJava 适配器
                 .build();
         logServece=retrofit.create((LogServece.class));
+
     }
 
 
@@ -109,6 +112,7 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.but_log:
+                pb_log.setVisibility(View.VISIBLE);
                 saveIdAndPwd(et_name.getText().toString(),et_pwd.getText().toString());
                 checkforlog();
                 break;
@@ -126,7 +130,8 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
 
     private void checkforlog() {                                                                    //远程核验身份，通过则跳转MainActivity          //z做个进度圈
 
-        logServece.log(et_name.getText().toString(),et_pwd.getText().toString()).observeOn(AndroidSchedulers.mainThread())			//指定observer的回调方法运行在主线程
+        logServece.log(et_name.getText().toString(),et_pwd.getText().toString())
+                .observeOn(AndroidSchedulers.mainThread())			//指定observer的回调方法运行在主线程
                 .subscribeOn(Schedulers.io())						    //运行在io线程
                 .subscribe(new Observer<RetSuccess>() {
 
@@ -137,12 +142,16 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
 
                     @Override
                     public void onNext(RetSuccess retSuccess) {
+
                         if(retSuccess.success.equals("1")){
                             i=new Intent(LogActivity.this, ResetPwd.class);
                             startActivity(i);
                             finish();
                         }
-                        else Toast.makeText(LogActivity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
+                        else {
+                            pb_log.setVisibility(View.INVISIBLE);
+                            Toast.makeText(LogActivity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override

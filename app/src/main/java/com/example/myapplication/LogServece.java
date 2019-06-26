@@ -10,4 +10,7 @@ public interface LogServece {
 
     @GET("register.php")
     Observable<RetSuccess>reg(@Query("name") String name,@Query("pwd") String pwd);
+
+    @GET("find_name.php")
+    Observable<RetSuccess>find_name(@Query("name") String name);
 }
