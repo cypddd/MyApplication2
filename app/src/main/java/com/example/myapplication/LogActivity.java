@@ -20,7 +20,19 @@ import com.example.myapplication.loginutil.RegisterActivity;
 import com.example.myapplication.loginutil.ResetPwd;
 import com.safframework.log.L;
 
-public class LogActivity extends AppCompatActivity implements View.OnClickListener {
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+
+public class LogActivity extends AppCompatActivity implements View.OnClickListener {                 //   有空做个微信登陆//
 
 
     String TAG="LogActivity";
@@ -31,17 +43,17 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
     boolean rember=false;
     Intent i;
 
-
+    Retrofit retrofit;
+    LogServece logServece;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
-
         initView();
-//        if((Boolean) getSharedPreferences("log_info", Context.MODE_PRIVATE).getBoolean("rember",false)){        //自动登陆
-//            cb_rember.setChecked(true);
-//            checkforlog();
-//        }
+        if((Boolean) getSharedPreferences("log_info", Context.MODE_PRIVATE).getBoolean("rember",false)){        //自动登陆
+            cb_rember.setChecked(true);
+            checkforlog();
+        }
     }
 
     private void initView() {
@@ -81,6 +93,15 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
                 }
             }
         });
+
+        MyApplication myApplication=(MyApplication)getApplication();
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(myApplication.getBaseurl())//基础URL 建议以 / 结尾
+                .addConverterFactory(GsonConverterFactory.create())//设置 Json 转换器
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())//RxJava 适配器
+                .build();
+        logServece=retrofit.create((LogServece.class));
     }
 
 
@@ -103,10 +124,40 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void checkforlog() {                                                                    //远程核验身份，通过则跳转MainActivity
-        i=new Intent(this, ResetPwd.class);
-        startActivity(i);
-        finish();
+    private void checkforlog() {                                                                    //远程核验身份，通过则跳转MainActivity          //z做个进度圈
+
+        logServece.log(et_name.getText().toString(),et_pwd.getText().toString()).observeOn(AndroidSchedulers.mainThread())			//指定observer的回调方法运行在主线程
+                .subscribeOn(Schedulers.io())						    //运行在io线程
+                .subscribe(new Observer<RetSuccess>() {
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(RetSuccess retSuccess) {
+                        if(retSuccess.success.equals("1")){
+                            i=new Intent(LogActivity.this, ResetPwd.class);
+                            startActivity(i);
+                            finish();
+                        }
+                        else Toast.makeText(LogActivity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+
+
     }
 
     public void saveIdAndPwd(String id,String pwd){

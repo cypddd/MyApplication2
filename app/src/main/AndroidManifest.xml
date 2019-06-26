@@ -10,12 +10,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name="com.example.myapplication.MyApplication"
+        >
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".loginutil.RegisterActivity" />
         <activity android:name=".loginutil.ResetPwd" />
         <activity android:name=".Test1" />
-        <activity android:name=".Main2Activity" />
         <activity android:name=".LogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
