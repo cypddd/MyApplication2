@@ -2,6 +2,7 @@ package com.example.myapplication.loginutil;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.LogServece;
 import com.example.myapplication.MyApplication;
 import com.example.myapplication.R;
 import com.example.myapplication.RetSuccess;
@@ -88,13 +88,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                                 @Override
                                 public void onError(Throwable e) {
-                                    L.d("err");
                                     pb.setVisibility(View.INVISIBLE);
                                 }
 
                                 @Override
                                 public void onComplete() {
-                                    L.d("complete");
                                     pb.setVisibility(View.INVISIBLE);
                                 }
                             });                                                     //name的合法性,有无重复
@@ -123,14 +121,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                             @Override
                             public void onError(Throwable e) {
-                                L.d("err2");
                                 pb_downstair.setVisibility(View.INVISIBLE);
                             }
 
                             @Override
                             public void onComplete() {
-                                L.d("complete2");
                                 pb_downstair.setVisibility(View.INVISIBLE);
+                                Intent i=new Intent(RegisterActivity.this, LogActivity.class);
+                                startActivity(i);
+                                finish();
                             }
                         });                                                     //name的合法性,有无重复
 

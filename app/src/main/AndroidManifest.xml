@@ -17,7 +17,7 @@
         <activity android:name=".loginutil.RegisterActivity" />
         <activity android:name=".loginutil.ResetPwd" />
         <activity android:name=".Test1" />
-        <activity android:name=".LogActivity">
+        <activity android:name=".loginutil.LogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

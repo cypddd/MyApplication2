@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.loginutil;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,21 +17,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.loginutil.RegisterActivity;
-import com.example.myapplication.loginutil.ResetPwd;
+import com.example.myapplication.MainActivity;
+import com.example.myapplication.MyApplication;
+import com.example.myapplication.R;
+import com.example.myapplication.RetSuccess;
 import com.safframework.log.L;
 
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
 
 public class LogActivity extends AppCompatActivity implements View.OnClickListener {                 //   有空做个微信登陆//
 
@@ -54,7 +52,7 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
         initView();
         if((Boolean) getSharedPreferences("log_info", Context.MODE_PRIVATE).getBoolean("rember",false)){        //自动登陆
             cb_rember.setChecked(true);
-//            checkforlog();
+            checkforlog();
         }
     }
 
@@ -112,8 +110,6 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.but_log:
-                pb_log.setVisibility(View.VISIBLE);
-                saveIdAndPwd(et_name.getText().toString(),et_pwd.getText().toString());
                 checkforlog();
                 break;
             case R.id.but_reg:
@@ -130,6 +126,7 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
 
     private void checkforlog() {                                                                    //远程核验身份，通过则跳转MainActivity          //z做个进度圈
 
+        pb_log.setVisibility(View.VISIBLE);
         logServece.log(et_name.getText().toString(),et_pwd.getText().toString())
                 .observeOn(AndroidSchedulers.mainThread())			//指定observer的回调方法运行在主线程
                 .subscribeOn(Schedulers.io())						    //运行在io线程
@@ -142,31 +139,29 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
 
                     @Override
                     public void onNext(RetSuccess retSuccess) {
-
-                        if(retSuccess.success.equals("1")){
-                            i=new Intent(LogActivity.this, ResetPwd.class);
+                        if(retSuccess.getSuccess().equals("1")){
+                            saveIdAndPwd(et_name.getText().toString(),et_pwd.getText().toString());
+                            i=new Intent(LogActivity.this, MainActivity.class);
                             startActivity(i);
                             finish();
                         }
                         else {
-                            pb_log.setVisibility(View.INVISIBLE);
                             Toast.makeText(LogActivity.this,"用户名或密码错误",Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        pb_log.setVisibility(View.INVISIBLE);
 
                     }
 
                     @Override
                     public void onComplete() {
+                        pb_log.setVisibility(View.INVISIBLE);
 
                     }
                 });
-
-
-
     }
 
     public void saveIdAndPwd(String id,String pwd){

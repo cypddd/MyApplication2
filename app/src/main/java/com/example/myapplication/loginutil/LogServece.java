@@ -1,5 +1,8 @@
-package com.example.myapplication;
+package com.example.myapplication.loginutil;
 
+import com.example.myapplication.RetSuccess;
+
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -13,4 +16,7 @@ public interface LogServece {
 
     @GET("find_name.php")
     Observable<RetSuccess>find_name(@Query("name") String name);
+
+    @GET("change_userinfo.php")
+    Observable<RetSuccess>change(@Query("name") String name,@Query("pwd") String pwd);
 }
