@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.MyApplication;
 import com.example.myapplication.R;
-import com.example.myapplication.RetSuccess;
 import com.safframework.log.L;
 
 import io.reactivex.Observer;
@@ -124,7 +122,7 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    private void checkforlog() {                                                                    //远程核验身份，通过则跳转MainActivity          //z做个进度圈
+    private void checkforlog() {                                                                    //远程核验身份，通过则跳转MainActivity
 
         pb_log.setVisibility(View.VISIBLE);
         logServece.log(et_name.getText().toString(),et_pwd.getText().toString())
@@ -134,11 +132,11 @@ public class LogActivity extends AppCompatActivity implements View.OnClickListen
 
                     @Override
                     public void onSubscribe(Disposable d) {
-
                     }
 
                     @Override
                     public void onNext(RetSuccess retSuccess) {
+                        L.json(retSuccess);
                         if(retSuccess.getSuccess().equals("1")){
                             saveIdAndPwd(et_name.getText().toString(),et_pwd.getText().toString());
                             i=new Intent(LogActivity.this, MainActivity.class);

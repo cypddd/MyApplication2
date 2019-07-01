@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.loginutil;
 
 public class RetSuccess {
     public String getSuccess() {

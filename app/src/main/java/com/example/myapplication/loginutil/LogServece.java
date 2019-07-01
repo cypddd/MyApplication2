@@ -1,8 +1,5 @@
 package com.example.myapplication.loginutil;
 
-import com.example.myapplication.RetSuccess;
-
-import io.reactivex.Completable;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

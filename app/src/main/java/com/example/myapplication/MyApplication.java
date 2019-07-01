@@ -5,6 +5,7 @@ import android.app.Application;
 import com.jeremyliao.liveeventbus.LiveEventBus;
 
 
+
 public class MyApplication extends Application {
 
     private String baseurl="http://cyp.natapp1.cc/";
@@ -21,5 +22,6 @@ public class MyApplication extends Application {
                 .supportBroadcast(this)
                 .lifecycleObserverAlwaysActive(true)
                 .autoClear(false);
+
     }
 }
